@@ -120,6 +120,15 @@ def run(in_t, iv, in_w_r, in_w_l):
         sim.simxSetJointTargetVelocity(clientID, rightMotor, w_r[id], sim.simx_opmode_oneshot)        
         sim.simxSetJointTargetVelocity(clientID, leftMotor, w_l[id], sim.simx_opmode_oneshot)
 
+        if (robRightMotorTorque >= 0.6):
+            import winsound
+            frequency = 2500  # Set Frequency To 2500 Hertz
+            duration = 500  # Set Duration To 1000 ms == 1 second
+            winsound.Beep(frequency, duration)
+
+            print(f"Strange Left wheel motor torque at t = {t[id]} seconds.")
+            #breakpoint()
+
         # Saving
         xp[id] = robPos[0]
         yp[id] = robPos[1]
