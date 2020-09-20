@@ -53,6 +53,10 @@ def run(in_t, iv, in_w_r, in_w_l):
     xp = np.zeros(len(t))
     yp = np.zeros(len(t))
     thetap = np.zeros(len(t))
+    tau_r = np.zeros(len(t))
+    tau_l = np.zeros(len(t))
+    w_rp = np.zeros(len(t))
+    w_lp = np.zeros(len(t))
 
     # Get initial position and orientation
     res = -1
@@ -71,6 +75,31 @@ def run(in_t, iv, in_w_r, in_w_l):
     sim.simxSetObjectPosition(clientID, rob, -1, robPosI, sim.simx_opmode_oneshot)
     sim.simxSetObjectOrientation(clientID, rob, -1, robOriI, sim.simx_opmode_oneshot)
 
+    #
+    # As recommeded by the documentation, the first simxGetJointForce call must be done with
+    # simx_opmode_streaming mode
+
+    res = -1
+    while (res != sim.simx_return_ok):
+        res, _ = sim.simxGetJointForce(clientID, rightMotor, sim.simx_opmode_streaming)
+
+    res = -1
+    while (res != sim.simx_return_ok):
+        res, _ = sim.simxGetJointForce(clientID, leftMotor, sim.simx_opmode_streaming)
+
+    #
+    # As recommeded by the documentation, the first simxGetObjectVelocity call must be done with
+    # simx_opmode_streaming mode
+
+    res = -1
+    while (res != sim.simx_return_ok):
+        res, _, _ = sim.simxGetObjectVelocity(clientID, rightMotor, sim.simx_opmode_streaming)
+
+    res = -1
+    while (res != sim.simx_return_ok):
+        res, _, _ = sim.simxGetObjectVelocity(clientID, leftMotor, sim.simx_opmode_streaming)
+
+    #
     # Starting coppeliaSim simulation
     res = sim.simxStartSimulation(clientID, sim.simx_opmode_oneshot_wait)
 
@@ -81,6 +110,12 @@ def run(in_t, iv, in_w_r, in_w_l):
         _, robPos = sim.simxGetObjectPosition(clientID, rob, -1, sim.simx_opmode_buffer)
         _, robOri = sim.simxGetObjectOrientation(clientID, rob, -1, sim.simx_opmode_buffer)
 
+        _, robRightMotorTorque = sim.simxGetJointForce(clientID, rightMotor, sim.simx_opmode_buffer)
+        _, robLeftMotorTorque = sim.simxGetJointForce(clientID, leftMotor, sim.simx_opmode_buffer)
+
+        _, _, robRightMotorVelocity = sim.simxGetObjectVelocity(clientID, rightMotor, sim.simx_opmode_buffer)
+        _, _, robLeftMotorVelocity = sim.simxGetObjectVelocity(clientID, leftMotor, sim.simx_opmode_buffer)
+
         # Actuating
         sim.simxSetJointTargetVelocity(clientID, rightMotor, w_r[id], sim.simx_opmode_oneshot)        
         sim.simxSetJointTargetVelocity(clientID, leftMotor, w_l[id], sim.simx_opmode_oneshot)
@@ -89,6 +124,10 @@ def run(in_t, iv, in_w_r, in_w_l):
         xp[id] = robPos[0]
         yp[id] = robPos[1]
         thetap[id] = robOri[2]
+        tau_r[id] = robRightMotorTorque
+        tau_l[id] = robLeftMotorTorque
+        w_rp[id] = robRightMotorVelocity[0]
+        w_lp[id] = robLeftMotorVelocity[0]
 
         sim.simxSynchronousTrigger(clientID)
 
@@ -96,4 +135,15 @@ def run(in_t, iv, in_w_r, in_w_l):
     sim.simxStopSimulation(clientID, sim.simx_opmode_oneshot_wait)
     sim.simxFinish(clientID)
 
-    return t, w_r, w_l, thetap, xp, yp
+    res = {
+        "t": t,
+        "w_r": w_rp,
+        "w_l": w_lp,
+        "theta": thetap,
+        "tau_r": tau_r,
+        "tau_l": tau_l,
+        "x": xp,
+        "y": yp
+    }
+
+    return res

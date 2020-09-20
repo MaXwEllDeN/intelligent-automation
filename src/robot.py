@@ -21,14 +21,17 @@ K_b     = 0.023                                 # emf constant (V/(rad-s))
 K_t     = 0.029                                 # torque constant (N-m/A)
 
 def v_ar(t):
-    if int(t) % 2 == 0:
+    if t < 2:
         return 1
-    else:
+    else: 
         return 1
 
 def v_al(t):
-    return 1
-
+    if t < 2:
+        return 1
+    else:
+        return 1
+#@jit
 def differential_drive_dynamics(t, x):   
     # x[0]: w_right
     # x[1]: w_left

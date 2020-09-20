@@ -3,15 +3,53 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def current(t, out, blocking=False):
+def armature(t, i_a, v_a, blocking=False):
     plt.figure()
-    plt.title("Model armature current")
-    plt.plot(t, out[2], label=r"$i_{a_R}$")
-    plt.plot(t, out[3], label=r"$i_{a_L}$")
+    axs = plt.subplot(2, 1, 1)
+    axs.title.set_text("Armature current")
+
+    plt.plot(t, i_a[0], label=r"$i_{a_R}$")
+    plt.plot(t, i_a[1], label=r"$i_{a_L}$")
     plt.legend()
     plt.xlabel(r"$t [s]$")
     plt.ylabel(r"$i_a [A]$")
     plt.grid()
+
+    axs = plt.subplot(2, 1, 2)
+    axs.title.set_text("Armature Voltage")
+
+    plt.plot(t, v_a[0], label=r"$v_{a_R}$")
+    plt.plot(t, v_a[1], label=r"$v_{a_L}$")
+    plt.legend()
+    plt.xlabel(r"$t\;[s]$")
+    plt.ylabel(r"$Voltage [V]$")
+    plt.grid()
+
+    plt.tight_layout()
+    plt.show(block=blocking)
+
+def torque(t, tau_r, tau_l, blocking=False):
+    plt.figure()
+    axs = plt.subplot(2, 1, 1)
+    axs.title.set_text("Right wheel torque")
+
+    plt.plot(t[0], tau_r[0], label=r"Model")
+    plt.plot(t[1], tau_r[1], label=r"Simulation")
+    plt.legend()
+    plt.xlabel(r"$t [s]$")
+    plt.ylabel(r"$\tau\;[N \cdot m]$")
+    plt.grid()
+
+    axs = plt.subplot(2, 1, 2)
+    axs.title.set_text("Left wheel torque")
+
+    plt.plot(t[0], tau_l[0], label=r"Model")
+    plt.plot(t[1], tau_l[1], label=r"Simulation")
+    plt.legend()
+    plt.xlabel(r"$t [s]$")
+    plt.ylabel(r"$\tau\;[N \cdot m]$")
+    plt.grid()
+
     plt.tight_layout()
     plt.show(block=blocking)
 
@@ -36,6 +74,7 @@ def position(t, w_r, w_l, theta, x, y, title, blocking=False):
     plt.xlabel(r"$t\;[s]$")
     plt.ylabel(r"$\dot{\phi} [rad/s]$")
     plt.grid()
+
     plt.tight_layout()
     plt.show(block=blocking)
 
@@ -92,4 +131,5 @@ def trajectory(x, y, theta, blocking=False):
 
     plt.tight_layout()
     plt.legend()
+
     plt.show(block=blocking)
