@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 def current(t, out, blocking=False):
     plt.figure()
-    plt.title("Armature current")
+    plt.title("Model armature current")
     plt.plot(t, out[2], label=r"$i_{a_R}$")
     plt.plot(t, out[3], label=r"$i_{a_L}$")
     plt.legend()
@@ -15,14 +15,14 @@ def current(t, out, blocking=False):
     plt.tight_layout()
     plt.show(block=blocking)
 
-def position(t, out, blocking=False):
+def position(t, w_r, w_l, theta, x, y, title, blocking=False):
     plt.figure()
     axs = plt.subplot(2, 1, 1)
-    axs.title.set_text("Robot position")
+    axs.title.set_text(title)
 
-    plt.plot(t, out[5], label=r"$x [m]$")
-    plt.plot(t, out[6], label=r"$y [m]$")
-    plt.plot(t, out[4], label=r"$\theta [º]$", linewidth=2)    
+    plt.plot(t, x, label=r"$x [m]$")
+    plt.plot(t, y, label=r"$y [m]$")
+    plt.plot(t, theta, label=r"$\theta [º]$", linewidth=2)    
     plt.legend()
     plt.xlabel(r"$t [s]$")
     plt.grid()
@@ -30,8 +30,8 @@ def position(t, out, blocking=False):
     axs = plt.subplot(2, 1, 2)
     axs.title.set_text("Velocity of each wheel")
 
-    plt.plot(t, out[0], label=r"$\dot{\phi_R}$")
-    plt.plot(t, out[1], label=r"$\dot{\phi_L}$")
+    plt.plot(t, w_r, label=r"$\dot{\phi_R}$")
+    plt.plot(t, w_l, label=r"$\dot{\phi_L}$")
     plt.legend()
     plt.xlabel(r"$t\;[s]$")
     plt.ylabel(r"$\dot{\phi} [rad/s]$")
@@ -39,7 +39,7 @@ def position(t, out, blocking=False):
     plt.tight_layout()
     plt.show(block=blocking)
 
-def draw_robot(x, y, q, s, h):
+def draw_robot(x, y, q, s, h, color):
     p = np.zeros(36).reshape(12,3)
     p[0,:] = [1,1/7,1/s]
     p[1,:] = [-3/7,1,1/s]
@@ -64,21 +64,32 @@ def draw_robot(x, y, q, s, h):
     p = np.dot(p, r)
     X = p[:, 0]
     Y = p[:, 1]
-    h.plot(X, Y, 'r-')
 
-def trajectory(y, blocking=False):
+    h.plot(X, Y, "-", color=color)
+
+def trajectory(x, y, theta, blocking=False):
     fig, ax = plt.subplots()
     plt.title("Top view: robot trajectory")
     ax.axis("equal")
-    ax.plot(y[5], y[6], color="blue", linestyle="dashed", linewidth=1)
+
+    ax.plot(x[0], y[0], color="blue", linestyle="dashed", linewidth=1)
+    ax.plot(x[1], y[1], color="black", linestyle="dashed", linewidth=1)
 
     plt.xlabel(r"x [m]")
     plt.ylabel(r"y [m]")
-    plt.grid()    
+    plt.grid()
     plt.show(block=False)
 
-    for i in range(0, len(y[5]) - 1, int(round(len(y[5]) / 20))):
-        draw_robot(y[5][i], y[6][i], y[4][i], 0.01, ax)
+    for i in range(0, len(x[0]) - 1, int(round(len(x[0]) / 20))):
+        last_robot_model = draw_robot(x[0][i], y[0][i], theta[0][i], 0.01, ax, "red")
+
+    ax.lines[-1].set_label("Model")
+
+    for i in range(0, len(x[1]) - 1, int(round(len(x[1]) / 20))):
+        last_robot_sim = draw_robot(x[1][i], y[1][i], theta[1][i], 0.01, ax, "green")
+
+    ax.lines[-1].set_label("Simulation")
 
     plt.tight_layout()
+    plt.legend()
     plt.show(block=blocking)

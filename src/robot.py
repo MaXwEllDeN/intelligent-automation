@@ -1,6 +1,5 @@
 #robot.py
 import numpy as np
-from scipy.integrate import RK45
 
 # Robot Geometry
 R       = 0.1                                   # wheel radius(m)
@@ -9,7 +8,7 @@ d       = 0.05
 m_w     = 1                                     # (kg)
 m_c     = 7                                     # (kg)
 m       = m_c + 2*m_w                           # Eq. 31
-I_w     = 0.005                                 # (kg-m^2)
+I_w     = 0#0.005                                 # (kg-m^2)
 I_m     = 0.0025                                # (kg-m^2)
 I_c     = 1                                     # (kg-m^2)
 I = I_c + m_c*d**2 + 2*m_w*L**2 + 2 *I_m        # Eq. 31
@@ -21,12 +20,18 @@ L_a     = 0.66e-3                               # armature inductance (H)
 K_b     = 0.023                                 # emf constant (V/(rad-s))
 K_t     = 0.029                                 # torque constant (N-m/A)
 
-def v_a(t):
+def v_ar(t):
+    if int(t) % 2 == 0:
+        return 1
+    else:
+        return 1
+
+def v_al(t):
     return 1
 
 def differential_drive_dynamics(t, x):   
-    # x[0]: phi_right
-    # x[1]: phi_left
+    # x[0]: w_right
+    # x[1]: w_left
     # x[2]: ia_right
     # x[3]: ia_left
     # x[4]: theta
@@ -59,7 +64,8 @@ def differential_drive_dynamics(t, x):
     
     i_a = np.array([[x[2]], [x[3]]], dtype=float)
 
-    ia_dot = (v_a(t) - e_a - R_a*i_a) / L_a                             # Eq. 76
+    v_a = np.array([[v_ar(t)], [v_al(t)]], dtype=float)
+    ia_dot = (v_a - e_a - R_a*i_a) / L_a                             # Eq. 76
 
     x_dot = (R/2) * np.cos(x[4]) * (x[0] + x[1])                        # Eq. 40
     y_dot = (R/2) * np.sin(x[4]) * (x[0] + x[1])                        # Eq. 40
