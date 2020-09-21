@@ -8,7 +8,7 @@ d       = 0.05
 m_w     = 1                                     # (kg)
 m_c     = 7                                     # (kg)
 m       = m_c + 2*m_w                           # Eq. 31
-I_w     = 0#0.005                                 # (kg-m^2)
+I_w     = 0.005                                 # (kg-m^2)
 I_m     = 0.0025                                # (kg-m^2)
 I_c     = 1                                     # (kg-m^2)
 I = I_c + m_c*d**2 + 2*m_w*L**2 + 2 *I_m        # Eq. 31
@@ -21,16 +21,16 @@ K_b     = 0.023                                 # emf constant (V/(rad-s))
 K_t     = 0.029                                 # torque constant (N-m/A)
 
 def v_ar(t):
-    if t < 2:
-        return 1
+    if t < 2.5:
+        return 3
     else: 
-        return 1
+        return 3
 
 def v_al(t):
     if t < 2:
-        return 1
+        return 3
     else:
-        return 1
+        return 3
 #@jit
 def differential_drive_dynamics(t, x):   
     # x[0]: w_right
@@ -68,7 +68,7 @@ def differential_drive_dynamics(t, x):
     i_a = np.array([[x[2]], [x[3]]], dtype=float)
 
     v_a = np.array([[v_ar(t)], [v_al(t)]], dtype=float)
-    ia_dot = (v_a - e_a - R_a*i_a) / L_a                             # Eq. 76
+    ia_dot = (v_a - e_a - R_a*i_a) / L_a                                # Eq. 76
 
     x_dot = (R/2) * np.cos(x[4]) * (x[0] + x[1])                        # Eq. 40
     y_dot = (R/2) * np.sin(x[4]) * (x[0] + x[1])                        # Eq. 40

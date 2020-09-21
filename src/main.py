@@ -19,7 +19,7 @@ iv[4] = 0           # robot yaw angle (theta)
 iv[5] = -2          # robot x position
 iv[6] = -2          # robot y position
 
-plot_choices = ["a", "p", "t", "tj", "all"]
+plot_choices = ["a", "p", "t", "tj", "none", "all"]
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
@@ -35,6 +35,7 @@ p:   robot position and wheel velocities
 t:   torque exerted on both wheels
 tj:  robot trajectory
 all: display all available plots
+none: no plot is displayed
 """
 
     parser.add_argument("--plot", nargs="+", type=str, choices=plot_choices,
@@ -44,7 +45,9 @@ all: display all available plots
     args = parser.parse_args()
 
     if "all" in args.plot:
-        args.plot = plot_choices[:-1]
+        args.plot = plot_choices[:-2]
+    elif "none" in args.plot:
+        args.plot = []
 
     t_span = [0, args.tf]
 
@@ -77,6 +80,7 @@ all: display all available plots
                  f"Running with tf = {sol_t[-1]} instead.")
 
             t_span[1] = sol_t[-1]
+
 
     print("Running CoppeliaSim simulation...")
     t0 = timeit.default_timer()

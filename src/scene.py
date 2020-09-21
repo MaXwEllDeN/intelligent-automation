@@ -88,16 +88,18 @@ def run(in_t, iv, in_w_r, in_w_l):
         res, _ = sim.simxGetJointForce(clientID, leftMotor, sim.simx_opmode_streaming)
 
     #
-    # As recommeded by the documentation, the first simxGetObjectVelocity call must be done with
+    # As recommeded by the documentation, the first simxGetJointForce call must be done with
     # simx_opmode_streaming mode
 
     res = -1
     while (res != sim.simx_return_ok):
-        res, _, _ = sim.simxGetObjectVelocity(clientID, rightMotor, sim.simx_opmode_streaming)
+        res, _ = sim.simxGetObjectFloatParameter(clientID, rightMotor,
+                                    sim.sim_jointfloatparam_velocity, sim.simx_opmode_streaming)
 
     res = -1
     while (res != sim.simx_return_ok):
-        res, _, _ = sim.simxGetObjectVelocity(clientID, leftMotor, sim.simx_opmode_streaming)
+        res, _ = robLeftMotorVelocity = sim.simxGetObjectFloatParameter(clientID, leftMotor,
+                                    sim.sim_jointfloatparam_velocity, sim.simx_opmode_streaming)
 
     #
     # Starting coppeliaSim simulation
@@ -113,21 +115,15 @@ def run(in_t, iv, in_w_r, in_w_l):
         _, robRightMotorTorque = sim.simxGetJointForce(clientID, rightMotor, sim.simx_opmode_buffer)
         _, robLeftMotorTorque = sim.simxGetJointForce(clientID, leftMotor, sim.simx_opmode_buffer)
 
-        _, _, robRightMotorVelocity = sim.simxGetObjectVelocity(clientID, rightMotor, sim.simx_opmode_buffer)
-        _, _, robLeftMotorVelocity = sim.simxGetObjectVelocity(clientID, leftMotor, sim.simx_opmode_buffer)
+        _, robRightMotorVelocity = sim.simxGetObjectFloatParameter(clientID, rightMotor,
+                                        sim.sim_jointfloatparam_velocity, sim.simx_opmode_blocking)
+
+        _, robLeftMotorVelocity = sim.simxGetObjectFloatParameter(clientID, leftMotor,
+                                        sim.sim_jointfloatparam_velocity, sim.simx_opmode_blocking)
 
         # Actuating
-        sim.simxSetJointTargetVelocity(clientID, rightMotor, w_r[id], sim.simx_opmode_oneshot)        
+        sim.simxSetJointTargetVelocity(clientID, rightMotor, w_r[id], sim.simx_opmode_oneshot)
         sim.simxSetJointTargetVelocity(clientID, leftMotor, w_l[id], sim.simx_opmode_oneshot)
-
-        if (robRightMotorTorque >= 0.6):
-            import winsound
-            frequency = 2500  # Set Frequency To 2500 Hertz
-            duration = 500  # Set Duration To 1000 ms == 1 second
-            winsound.Beep(frequency, duration)
-
-            print(f"Strange Left wheel motor torque at t = {t[id]} seconds.")
-            #breakpoint()
 
         # Saving
         xp[id] = robPos[0]
@@ -135,8 +131,8 @@ def run(in_t, iv, in_w_r, in_w_l):
         thetap[id] = robOri[2]
         tau_r[id] = robRightMotorTorque
         tau_l[id] = robLeftMotorTorque
-        w_rp[id] = robRightMotorVelocity[0]
-        w_lp[id] = robLeftMotorVelocity[0]
+        w_rp[id] = robRightMotorVelocity
+        w_lp[id] = robLeftMotorVelocity
 
         sim.simxSynchronousTrigger(clientID)
 

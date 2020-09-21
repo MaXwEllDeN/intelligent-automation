@@ -22,10 +22,12 @@ def read_model_data(path):
     with open(path, "r") as file:
         reader = csv.reader(file, delimiter=",")
         header = next(reader)
-        #y = np.empty(len(header), dtype=np.ndarray)
+
+        # TODO: enhance append operation, right now it's probably holding two
+        # copies of t and y matrices, both with huge amount of data. Notice that the y matrix is multidimensional
+
         y =[[] for i in range(0, len(header) - 1)]
 
-        counter = 0
         for row in reader:
             t = np.append(t, float(row[0]))
 
