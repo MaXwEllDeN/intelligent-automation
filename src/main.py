@@ -55,7 +55,7 @@ none: no plot is displayed
     sol_y = None
    
     if args.f == "":
-        print(f"Solving robot dynamics for given initial conditions with time span = (0, {t_span[1]})...")
+        print(f"Solving robot dynamics for given initial conditions with time span = (0.0, {t_span[1]})...")
         t0 = timeit.default_timer()
         sol = solve_ivp(robot.differential_drive_dynamics, t_span, iv)
         tf = timeit.default_timer()
@@ -78,9 +78,12 @@ none: no plot is displayed
         if t_span[1] > sol_t[-1]:
             print(f"[WARNING] final time input({t_span[1]}s) was greater than stored execution time({sol_t[-1]}s)."
                  f"Running with tf = {sol_t[-1]} instead.")
+        elif t_span[1] < sol_t[-1]:
+            sol_t = [t for t in sol_t if t <= t_span[1]]
+            new_len = len(sol_t)
 
-            t_span[1] = sol_t[-1]
-
+            for i in range(0, len(sol_y)):
+                sol_y[i] = sol_y[i][:new_len]
 
     print("Running CoppeliaSim simulation...")
     t0 = timeit.default_timer()
@@ -94,15 +97,15 @@ none: no plot is displayed
     x       = [sol_y[5], sim["x"]]
     y       = [sol_y[6], sim["y"]]
 
-    tau_r = robot.N * robot.K_t * sol_y[3]                      # Eq. 76
-    tau_l = robot.N * robot.K_t * sol_y[4]                      # Eq. 76
+    tau_r = robot.N * robot.K_t * sol_y[2]                      # Eq. 76
+    tau_l = robot.N * robot.K_t * sol_y[3]                      # Eq. 76
 
     v_ar = [robot.v_ar(t) for t in sol_t]
-    v_al = [robot.v_ar(t) for t in sol_t]
+    v_al = [robot.v_al(t) for t in sol_t]
 
     if "a" in args.plot:
         block = args.plot[-1] == "a"
-        graphs.armature(sol_t, [sol_y[3], sol_y[4]], [v_ar, v_al], blocking=block)
+        graphs.armature(sol_t, [sol_y[2], sol_y[3]], [v_ar, v_al], blocking=block)
 
     if "p" in args.plot:
         block = args.plot[-1] == "p"

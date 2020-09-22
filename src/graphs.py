@@ -68,11 +68,11 @@ def position(t, w_r, w_l, theta, x, y, title, blocking=False):
     axs = plt.subplot(2, 1, 2)
     axs.title.set_text("Velocity of each wheel")
 
-    plt.plot(t, w_r, label=r"$\dot{\phi_R}$")
-    plt.plot(t, w_l, label=r"$\dot{\phi_L}$")
+    plt.plot(t, w_r, label=r"$\dot{\varphi_R}$")
+    plt.plot(t, w_l, label=r"$\dot{\varphi_L}$")
     plt.legend()
     plt.xlabel(r"$t\;[s]$")
-    plt.ylabel(r"$\dot{\phi} [rad/s]$")
+    plt.ylabel(r"$\dot{\varphi} [rad/s]$")
     plt.grid()
 
     plt.tight_layout()
