@@ -44,7 +44,7 @@ function zDot = dinModel(t,z)
     xDot = v0*cos(z(3));
     yDot = v0*sin(z(3));
     phiRef = atan2((goal(2)-z(2)),(goal(1)-z(1)));
-    e = phiRef - z(3);
+    e = unwrap(phiRef - z(3));
     phiDot = -Kd*c^2*z(4)+(Kp+Kd*c)*e;
     rDot = -c*z(4)+e;
     
