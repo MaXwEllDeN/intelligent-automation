@@ -1,0 +1,46 @@
+for i = 1:42
+    fprintf("'p3dx_LS%02d';\n", i);
+end
+
+lsNames = ['p3dx_LS01';
+'p3dx_LS02';
+'p3dx_LS03';
+'p3dx_LS04';
+'p3dx_LS05';
+'p3dx_LS06';
+'p3dx_LS07';
+'p3dx_LS08';
+'p3dx_LS09';
+'p3dx_LS10';
+'p3dx_LS11';
+'p3dx_LS12';
+'p3dx_LS13';
+'p3dx_LS14';
+'p3dx_LS15';
+'p3dx_LS16';
+'p3dx_LS17';
+'p3dx_LS18';
+'p3dx_LS19';
+'p3dx_LS20';
+'p3dx_LS21';
+'p3dx_LS22';
+'p3dx_LS23';
+'p3dx_LS24';
+'p3dx_LS25';
+'p3dx_LS26';
+'p3dx_LS27';
+'p3dx_LS28';
+'p3dx_LS29';
+'p3dx_LS30';
+'p3dx_LS31';
+'p3dx_LS32';
+'p3dx_LS33';
+'p3dx_LS34';
+'p3dx_LS35';
+'p3dx_LS36';
+'p3dx_LS37';
+'p3dx_LS38';
+'p3dx_LS39';
+'p3dx_LS40';
+'p3dx_LS41';
+'p3dx_LS42'];
