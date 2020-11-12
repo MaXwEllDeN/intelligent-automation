@@ -11,7 +11,7 @@ def save_model_data(path, t, y):
         for j in range(0, len(y)):
             output_str +=f",{y[j][i]:.4f}"
 
-    with open(path, "x") as file:
+    with open(path, "w") as file:
         file.write(output_str)
 
     return True

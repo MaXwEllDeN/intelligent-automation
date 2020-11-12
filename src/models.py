@@ -13,7 +13,7 @@ y_g = 2
 
 # Controller
 K_p = 0.28
-K_d = -0.9
+K_d = 15
 
 def ddmr_p_nonlinear(t, x):
     # x[0]: x_pos
@@ -39,20 +39,6 @@ A = np.matrix([[0, 0, -v_0*np.sin(phi_0)],
 
 B = np.matrix([[0], [0], [K_p]])
 
-def ddmr_p_linear(t, x):
-    # x[0]: x_pos
-    # x[1]: y_pos
-    # x[2]: phi
-
-    phi = x[2]
-    phi_d = np.arctan((y_g - x[1]) / (x_g - x[0]))
-    e = phi_d - phi
-
-    states = (A@x).transpose() + B*e
-    states = np.squeeze(np.asarray(states))
-    return states
-
-
 def ddmr_pd_nonlinear(t, x):
     # x[0]: x_pos
     # x[1]: y_pos
@@ -70,5 +56,4 @@ def ddmr_pd_nonlinear(t, x):
     states[1] = v_0 * np.sin(phi)
     states[2] = -z*(c**2)*K_d + e * (K_p +c*K_d)    
     states[3] = e - c * z
-
     return states
