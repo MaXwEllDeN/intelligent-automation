@@ -118,7 +118,7 @@ for gen=0:maxGens
         ylabel('Frequency of the Bit 1');
         xlabel('Locus');
         drawnow;
-    end    
+    end
 
     % Conditionally perform sigma scaling 
     if sigmaScalingFlag

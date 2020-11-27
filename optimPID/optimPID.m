@@ -90,4 +90,6 @@ switch idx
         J=(t.*e'*dt)*e;
     case 4  % ITAE
         J=sum(t'.*abs(e)*dt);
+        
+    J
 end

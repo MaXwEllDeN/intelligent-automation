@@ -1,9 +1,10 @@
 close all;
-popSize = 12;
+popSize = 60;
 maxGens = 500;
 error = 1e-3;
 
-genotypeSize = 5;           % 
+genotypeMin = 4;
+genotypeSize = 4*3;           % 
 probCrossover = 1;          % The probability of crossing over. 
 probMutation = 1;           % The mutation probability (per bit)
 
@@ -53,7 +54,7 @@ for gen=0:maxGens
     [offspringA, offspringB] = crossover(firstParents, secondParents, probCrossover);
     [offspringA, offspringB] = mutate(offspringA, offspringB, probMutation);
 
-    pop = [q14ToDec(offspringA); q14ToDec(offspringB)]
+    pop = [q14ToDec(offspringA); q14ToDec(offspringB)];
     % display the generation number, the average Fitness of the population,
     % and the maximum fitness of any individual in the population
     if verboseFlag
@@ -65,6 +66,7 @@ for gen=0:maxGens
     if abs(f(eliteIndiv)) <= error
         break;
     end
+
 end
 
 x1 = eliteIndiv;
@@ -102,8 +104,8 @@ function [newOffspringA, newOffspringB] = mutate(offspringA, offspringB, probMut
 
     pool = char("0123456789ABCDEF");
 
-    len = size(offspringA, 1);
-    n = size(offspringA, 2);
+    len = size(offspringA, 2);
+    n = size(offspringA, 1);
 
     for i = 1:len
         for j = 1:n
