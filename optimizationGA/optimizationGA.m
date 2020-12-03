@@ -3,8 +3,7 @@ popSize = 60;
 maxGens = 500;
 error = 1e-3;
 
-genotypeMin = 4;
-genotypeSize = 4*3;           % 
+genotypeSize = 4;           % 
 probCrossover = 1;          % The probability of crossing over. 
 probMutation = 1;           % The mutation probability (per bit)
 
@@ -21,7 +20,7 @@ f = @(x) a*exp(-b*x).*sin(c*x);
 avgFitnessHist = zeros(1, maxGens + 1);
 maxFitnessHist = zeros(1, maxGens + 1);
 
-pop = rand(popSize, 1);
+pop = 3*rand(popSize, 1);
 
 eliteIndiv = [];
 eliteFitness = -realmax;

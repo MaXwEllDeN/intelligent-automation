@@ -3,6 +3,11 @@ close all;
 PERFORMANCE_CALC = 'itae';
 %
 
+global dt
+global iv
+global t_span
+global params
+
 dt = 0.0357;
 iv = [0; 0; pi/4; eps; eps];
 
@@ -12,8 +17,8 @@ iv(3) = pi;
 t_span = 0:dt:12;
 params = [2, 2, 0.25, 50]; 
 
-popSize = 20;
-maxGens = 60;
+popSize = 60;
+maxGens = 300;
 tolerance = 1e-4;
 
 paramSize = 4;
@@ -161,10 +166,10 @@ function [newOffspringA, newOffspringB]=mutate(offspringA, offspringB, probMutat
 end
 
 function J=iecost(individual, idx)
-    global dt;
-    global iv;
-    global t_span;
-    global params;
+    global iv
+    global dt
+    global t_span
+    global params
 
     [kp, ki, kd] = chromosomeToParams(individual);
     [t, x] = ode45(@(t, x)dynamicModelPID(t, x, kp, ki, kd, params), t_span, iv, odeset('RelTol',1e-6));

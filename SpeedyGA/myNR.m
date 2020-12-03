@@ -18,6 +18,7 @@ y=f(x);
 %
 figure(1)
 plot(x,y),hold
+ylabel('f(x)')
 xlabel('x')
 grid
 %
