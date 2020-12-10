@@ -1,0 +1,11 @@
+Kc=[15;14;13;12];
+Ti=[6.75;7.00;6.50;6.25];
+Td=[1.69;2.00;1.00;1.25];
+%
+Kc_features = {};
+Kc_features = 
+
+for i=1:4,
+    [y t cf1 cf2 cf3 cf4 cf5] = expert_sys(Kc(i), Ti(i), Td(i));
+    figure(1),plot(t,y),grid
+end
